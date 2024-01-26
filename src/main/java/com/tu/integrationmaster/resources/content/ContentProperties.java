@@ -22,7 +22,12 @@ public class ContentProperties {
     public static final String CERTIFICATES_FOLDER = "Certificates";
     public static final String ARCHIVES_FOLDER = "Archives";
     public static final String BUSINESS_LOGS_FOLDER = "Logs";
-    
+
+    public static final String H2_DB_JDBC_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+    public static final String H2_DB_JDBC_USER_NAME = "sa";
+    public static final String H2_DB_JDBC_PASSWORD = "sa";
+    public static final String H2_DB_JDBC_CLASS_FORNAME = "org.h2.Driver";
+
     public static final String APP_DEFAULT_PROPRTIES_PATH = "app/env/config/APPConfig.properties";
     
     public static final String WELCOME_MGS = "Universal Integration Master 1.0";
@@ -59,4 +64,6 @@ public class ContentProperties {
     public static final String ARCHIVES_FOLDER_CREATED_MSG = "Archives Folder created successfully.";
     public static final String ARCHIVES_FOLDER_EXISTS_MSG = "Archives Folder already exists.";
     public static final String ARCHIVES_FOLDER_CREATION_EXCEPTION_MSG = "Error occurred while creating the Archives folder: ";
+
+    public static final String H2_DB_CONNECTION_CREATION_EXCEPTION_MSG = "Error occurred while creating H2 Database Connection: ";
 }

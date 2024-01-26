@@ -15,6 +15,7 @@ public class IntegrationConfigPOJO {
     private final String CERTIFICATES_FOLDER = resourceProperties.integrationConfigBundle().getProperty("Certificates");
     private final String ARCHIVES_FOLDER = resourceProperties.integrationConfigBundle().getProperty("Archives");
     private final String BUSINESS_LOGS_FOLDER = resourceProperties.integrationConfigBundle().getProperty("Logs");
+    private final String CSV_FILE_NAME = resourceProperties.integrationConfigBundle().getProperty("CSVFileName");
 
 
     public String getINPUT_FOLDER() {
@@ -39,5 +40,9 @@ public class IntegrationConfigPOJO {
 
     public String getBUSINESS_LOGS_FOLDER() {
         return BUSINESS_LOGS_FOLDER;
+    }
+    
+    public String getCSV_FILE_NAME() {
+        return CSV_FILE_NAME;
     }
 }

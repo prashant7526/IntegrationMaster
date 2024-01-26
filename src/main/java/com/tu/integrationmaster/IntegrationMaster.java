@@ -19,5 +19,6 @@ public class IntegrationMaster {
         LogFileManager.INSTANCE.systemLogManager(ContentProperties.WELCOME_MGS);
         LogFileManager.INSTANCE.systemLogManager(ContentProperties.EXECUTION_START_LOG_MSG);
         DataFoldersCheck.INSTANCE.doCheckDataFolders();
+        
     }
 }
