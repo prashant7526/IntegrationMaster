@@ -6,12 +6,21 @@ import com.tu.integrationmaster.prerequisites.log.LogFileManager;
 import com.tu.integrationmaster.prerequisites.systm.SystemFolderCheck;
 import com.tu.integrationmaster.resources.content.ContentProperties;
 
-/**
+/*
  *
  * @author Canavans
  */
 public class IntegrationMaster {
     
+    /**
+     * The main method of the Java program.
+     *
+     * This code defines the main method of a Java program. It creates an instance of APPConfigPOJO,
+     * performs folder checks, logs welcome and start messages, and checks data folders
+     * 
+     * @param  args  the command-line arguments
+     * @return       void
+     */
     public static void main(String[] args) {
         APPConfigPOJO appConfigPOJO = new APPConfigPOJO();
         

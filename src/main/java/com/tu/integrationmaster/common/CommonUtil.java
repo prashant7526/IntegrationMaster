@@ -9,6 +9,11 @@ import com.tu.integrationmaster.resources.content.ContentProperties;
 public class CommonUtil {
     public static final CommonUtil commonUtil = new CommonUtil();
 
+    /**
+     * Get the database connection.
+     *
+     * @return         	the database connection
+     */
     public Connection getDBConnection() throws ClassNotFoundException{
         
         Class.forName(ContentProperties.H2_DB_JDBC_CLASS_FORNAME);
