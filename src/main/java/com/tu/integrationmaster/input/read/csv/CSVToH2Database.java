@@ -2,6 +2,7 @@ package com.tu.integrationmaster.input.read.csv;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.LineNumberReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -27,19 +28,32 @@ public class CSVToH2Database {
      * @return None
      */
     public void loadCSVFile() {
-
+    
         String csvFilePath = IntegrationConfigPOJO.INSTANCE.getINPUT_FOLDER().concat("\\")
                 .concat(IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME());
         String tableName = IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME().replace(".csv", "");
-
-        try {
-            Connection connection = CommonUtil.commonUtil.getDBConnection();
-            BufferedReader br = new BufferedReader(new FileReader(csvFilePath));
-
+    
+        try (Connection connection = CommonUtil.commonUtil.getDBConnection();
+             BufferedReader br = new BufferedReader(new FileReader(csvFilePath));)
+        {
             String line;
             String[] headers = null;
             boolean isFirstLine = true;
-
+            int totalLines = 0;
+            int currentLine = 0;
+    
+            // Calculate the total number of lines in the file
+            try (LineNumberReader lnr = new LineNumberReader(new FileReader(csvFilePath))) {
+                while (lnr.skip(Long.MAX_VALUE) > 0) {
+                    // Do nothing
+                }
+                totalLines = lnr.getLineNumber() + 1;
+            }
+    
+            // Create the progress bar
+            StringBuilder progressBar = new StringBuilder("[");
+            int progressBarWidth = 50;
+    
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 if (isFirstLine) {
@@ -49,7 +63,24 @@ public class CSVToH2Database {
                 } else {
                     insertRow(connection, tableName, headers, values);
                 }
+    
+                currentLine++;
+    
+                // Update the progress bar
+                int progress = (int) ((double) currentLine / totalLines * progressBarWidth);
+                progressBar.setLength(1);
+                progressBar.append("=".repeat(progress));
+                progressBar.append(" ".repeat(progressBarWidth - progress));
+                progressBar.append("] ");
+    
+                // Print the progress bar
+                System.out.print("\r" + progressBar + (int) ((double) currentLine / totalLines * 100) + "%");
+    
+                // Sleep for a short duration to slow down the progress
+                Thread.sleep(100);
             }
+    
+            System.out.println();
             System.out.println("CSV data imported into H2 database table: " + tableName);
         } catch (Exception e) {
             LogFileManager.INSTANCE.systemLogManager(e.getMessage());
