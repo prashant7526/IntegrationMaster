@@ -2,7 +2,6 @@ package com.tu.integrationmaster.input.read.xls;
 
 import java.io.FileInputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -13,6 +12,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.tu.integrationmaster.common.CommonUtil;
 import com.tu.integrationmaster.pojo.app.settings.config.IntegrationConfigPOJO;
 
 public class XLSToH2Database {
@@ -20,7 +20,7 @@ public class XLSToH2Database {
 
     /**
      * Reads an XLSX file, extracts the data, and loads it into an in-memory H2 database table.
-     * The table name is derived from the CSV file name provided in the IntegrationConfigPOJO class.
+     * The table name is derived from the XLSX file name provided in the IntegrationConfigPOJO class.
      * The first row of the XLSX file is treated as the header row, and its values are used as column names in the database table.
      * Each subsequent row is inserted as a new row in the database table.
      * The XLSX file is assumed to have one sheet, specified by the sheetIndex parameter (0-based).
@@ -32,17 +32,16 @@ public class XLSToH2Database {
         String excelFilePath = IntegrationConfigPOJO.INSTANCE.getINPUT_FOLDER().concat("\\")
                 .concat(IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME());
         String tableName = IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME().replace(".csv", "");
-
+    
         int sheetIndex = 0; // Specify the sheet index here (0-based)
-
-        try (Connection connection = DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-                FileInputStream fis = new FileInputStream(excelFilePath);
-                Workbook workbook = new HSSFWorkbook(fis)) {
-
+    
+        try (Connection connection = CommonUtil.commonUtil.getDBConnection();
+             FileInputStream fileInputStream = new FileInputStream(excelFilePath);
+             Workbook workbook = new HSSFWorkbook(fileInputStream);) {
             Sheet sheet = workbook.getSheetAt(sheetIndex);
             Row headerRow = sheet.getRow(0);
             int columnCount = headerRow.getLastCellNum();
-
+    
             String[] headers = new String[columnCount];
             Iterator<Cell> cellIterator = headerRow.cellIterator();
             int columnIndex = 0;
@@ -50,10 +49,12 @@ public class XLSToH2Database {
                 Cell cell = cellIterator.next();
                 headers[columnIndex++] = cell.getStringCellValue();
             }
-
+    
             createTable(connection, tableName, headers);
-
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+    
+            int totalRows = sheet.getLastRowNum();
+    
+            for (int i = 1; i <= totalRows; i++) {
                 Row row = sheet.getRow(i);
                 String[] values = new String[columnCount];
                 if (row != null) {
@@ -79,8 +80,13 @@ public class XLSToH2Database {
                     }
                 }
                 insertRow(connection, tableName, headers, values);
+    
+                // Update the progress indicator
+                int progress = (int) ((double) i / totalRows * 100);
+                System.out.print("\rProgress: " + progress + "%");
             }
-
+    
+            System.out.println();
             System.out.println("Excel data imported into H2 database table: " + tableName);
         } catch (Exception e) {
             e.printStackTrace();
