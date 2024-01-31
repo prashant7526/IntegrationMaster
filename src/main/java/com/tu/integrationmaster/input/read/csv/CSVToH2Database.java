@@ -19,6 +19,10 @@ public class CSVToH2Database {
     /**
      * Loads a CSV file into a database table.
      *
+     * This Java code snippet defines a method loadCSVFile() that loads a CSV file into a database table.
+     * It reads the CSV file, creates a table in the database with the same structure as the CSV file, and inserts the data into the table.
+     * If an error occurs during this process, it logs the error message.
+     * 
      * @param None
      * @return None
      */
@@ -56,6 +60,10 @@ public class CSVToH2Database {
      * A method to create a table in the database using the provided connection,
      * table name, and headers.
      *
+     * This code defines a method to create a table in a database using the provided connection, table name, and headers.
+     * It uses the provided connection to execute a SQL query that creates a table with the specified name and columns.
+     * If an exception occurs during the table creation process, it is caught and logged using a system log manager.
+     * 
      * @param connection the connection to the database
      * @param tableName  the name of the table to be created
      * @param headers    an array of column headers for the table
@@ -79,6 +87,10 @@ public class CSVToH2Database {
     /**
      * Insert a new row into the specified table with the given headers and values.
      *
+     * This code snippet defines a method to insert a new row into a specified database table.
+     * It takes the database connection, table name, headers, and values as parameters, constructs an SQL INSERT query, and executes it using a prepared statement.
+     * If an exception occurs during the insertion, it is caught and logged.
+     * 
      * @param connection the connection to the database
      * @param tableName  the name of the table to insert into
      * @param headers    the headers of the table

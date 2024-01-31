@@ -1,9 +1,9 @@
 package com.tu.integrationmaster.prerequisites.systm;
 
+import java.io.File;
+
 import com.tu.integrationmaster.pojo.app.env.config.APPConfigPOJO;
 import com.tu.integrationmaster.resources.content.ContentProperties;
-
-import java.io.File;
 
 /**
  * @author Canavans
@@ -12,11 +12,30 @@ public class SystemFolderCheck {
 
     public static final SystemFolderCheck INSTANCE = new SystemFolderCheck();
 
+    /**
+     * This method checks if folders exist.
+     *
+     * This Java code defines a method doCheckIfFolders that takes an APPConfigPOJO object as input.
+     * It calls two other methods sysFolderCheck and customConfFolderCheck to check if certain folders
+     * 
+     * @param  appConfigPOJO  the app configuration POJO
+     * @return                void
+     */
     public void doCheckIfFolders(APPConfigPOJO appConfigPOJO) {
         this.sysFolderCheck(appConfigPOJO);
         this.customConfFolderCheck(appConfigPOJO);
     }
 
+    /**
+     * Check system folders and create them if necessary.
+     * 
+     * This code snippet defines a method sysFolderCheck that takes an APPConfigPOJO object as a parameter.
+     * It checks for the existence of system folders specified in the appConfigPOJO and creates them if they don't exist.
+     * If the folder creation fails, it prints an error message. If any exception occurs during the process, it prints the stack trace.
+     *
+     * @param  appConfigPOJO   the application configuration POJO
+     * @return                 void
+     */
     private void sysFolderCheck(APPConfigPOJO appConfigPOJO) {
         try {
 
@@ -47,6 +66,17 @@ public class SystemFolderCheck {
         }
     }
 
+    /**
+     * Checks for the existence of the custom configuration folder and creates it if it does not exist.
+     *
+     * This Java code snippet checks for the existence of a custom configuration folder and creates it if it does not exist.
+     * It uses the application configuration POJO to get the folder paths, then checks if the folder exists and is a directory.
+     * If the folder does not exist, it creates it and prints relevant messages.
+     * If any exceptions occur during this process, they are caught and printed to the console.
+     * 
+     * @param  appConfigPOJO  the application configuration POJO containing folder paths
+     * @return                none
+     */
     private void customConfFolderCheck(APPConfigPOJO appConfigPOJO) {
         try {
             String tuFolderPath = appConfigPOJO.getDEFAULT_APP_DIRECTORY();
