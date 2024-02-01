@@ -79,7 +79,6 @@ public class CSVToH2Database {
                 // Sleep for a short duration to slow down the progress
                 Thread.sleep(100);
             }
-    
             System.out.println();
             System.out.println("CSV data imported into H2 database table: " + tableName);
         } catch (Exception e) {

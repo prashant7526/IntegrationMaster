@@ -28,7 +28,8 @@ public class XLSToH2Database {
      *
      * @throws SQLException  If a database access error occurs.
      */
-    public void loadXLSXFile() {
+    public void loadXLSXFile()
+    {
         String excelFilePath = IntegrationConfigPOJO.INSTANCE.getINPUT_FOLDER().concat("\\")
                 .concat(IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME());
         String tableName = IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME().replace(".csv", "");
@@ -37,7 +38,8 @@ public class XLSToH2Database {
     
         try (Connection connection = CommonUtil.commonUtil.getDBConnection();
              FileInputStream fileInputStream = new FileInputStream(excelFilePath);
-             Workbook workbook = new HSSFWorkbook(fileInputStream);) {
+             Workbook workbook = new HSSFWorkbook(fileInputStream);) 
+        {
             Sheet sheet = workbook.getSheetAt(sheetIndex);
             Row headerRow = sheet.getRow(0);
             int columnCount = headerRow.getLastCellNum();
@@ -85,10 +87,11 @@ public class XLSToH2Database {
                 int progress = (int) ((double) i / totalRows * 100);
                 System.out.print("\rProgress: " + progress + "%");
             }
-    
             System.out.println();
             System.out.println("Excel data imported into H2 database table: " + tableName);
-        } catch (Exception e) {
+        } 
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
@@ -115,7 +118,8 @@ public class XLSToH2Database {
         createTableQuery.setLength(createTableQuery.length() - 1);
         createTableQuery.append(")");
 
-        try (PreparedStatement statement = connection.prepareStatement(createTableQuery.toString())) {
+        try (PreparedStatement statement = connection.prepareStatement(createTableQuery.toString()))
+        {
             statement.executeUpdate();
         }
     }
