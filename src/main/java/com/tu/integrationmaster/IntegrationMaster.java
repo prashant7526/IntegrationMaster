@@ -1,5 +1,6 @@
 package com.tu.integrationmaster;
 
+import com.tu.integrationmaster.input.read.xls.XLSToH2Database;
 import com.tu.integrationmaster.pojo.app.env.config.APPConfigPOJO;
 import com.tu.integrationmaster.prerequisites.data.DataFoldersCheck;
 import com.tu.integrationmaster.prerequisites.log.LogFileManager;
@@ -28,5 +29,6 @@ public class IntegrationMaster {
         LogFileManager.INSTANCE.systemLogManager(ContentProperties.WELCOME_MGS);
         LogFileManager.INSTANCE.systemLogManager(ContentProperties.EXECUTION_START_LOG_MSG);
         DataFoldersCheck.INSTANCE.doCheckDataFolders();
+        XLSToH2Database.INSTANCE.loadXLSXFile();
     }
 }

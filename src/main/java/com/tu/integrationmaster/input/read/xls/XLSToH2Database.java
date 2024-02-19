@@ -17,7 +17,7 @@ import com.tu.integrationmaster.pojo.app.settings.config.IntegrationConfigPOJO;
 
 public class XLSToH2Database {
     public static XLSToH2Database INSTANCE = new XLSToH2Database();
-
+    
     /**
      * Reads an XLSX file, extracts the data, and loads it into an in-memory H2 database table.
      * The table name is derived from the XLSX file name provided in the IntegrationConfigPOJO class.
@@ -28,22 +28,20 @@ public class XLSToH2Database {
      *
      * @throws SQLException  If a database access error occurs.
      */
-    public void loadXLSXFile()
-    {
+    public void loadXLSXFile() {
         String excelFilePath = IntegrationConfigPOJO.INSTANCE.getINPUT_FOLDER().concat("\\")
-                .concat(IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME());
-        String tableName = IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME().replace(".csv", "");
-    
+                .concat(IntegrationConfigPOJO.INSTANCE.getXLSX_FILE_NAME());
+        String tableName = IntegrationConfigPOJO.INSTANCE.getXLSX_FILE_NAME().replace(".xlsx", "");
+        
         int sheetIndex = 0; // Specify the sheet index here (0-based)
-    
+        
         try (Connection connection = CommonUtil.commonUtil.getDBConnection();
              FileInputStream fileInputStream = new FileInputStream(excelFilePath);
-             Workbook workbook = new HSSFWorkbook(fileInputStream);) 
-        {
+             Workbook workbook = new HSSFWorkbook(fileInputStream);) {
             Sheet sheet = workbook.getSheetAt(sheetIndex);
             Row headerRow = sheet.getRow(0);
             int columnCount = headerRow.getLastCellNum();
-    
+            
             String[] headers = new String[columnCount];
             Iterator<Cell> cellIterator = headerRow.cellIterator();
             int columnIndex = 0;
@@ -51,11 +49,11 @@ public class XLSToH2Database {
                 Cell cell = cellIterator.next();
                 headers[columnIndex++] = cell.getStringCellValue();
             }
-    
+            
             createTable(connection, tableName, headers);
-    
+            
             int totalRows = sheet.getLastRowNum();
-    
+            
             for (int i = 1; i <= totalRows; i++) {
                 Row row = sheet.getRow(i);
                 String[] values = new String[columnCount];
@@ -82,20 +80,18 @@ public class XLSToH2Database {
                     }
                 }
                 insertRow(connection, tableName, headers, values);
-    
+                
                 // Update the progress indicator
                 int progress = (int) ((double) i / totalRows * 100);
                 System.out.print("\rProgress: " + progress + "%");
             }
             System.out.println();
             System.out.println("Excel data imported into H2 database table: " + tableName);
-        } 
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
+    
     /**
      * Creates a table in the database with the specified table name and column names derived from the provided headers array.
      * Each header is treated as a column name, and all columns are defined as VARCHAR(255) data type.
@@ -109,21 +105,20 @@ public class XLSToH2Database {
         StringBuilder createTableQuery = new StringBuilder("CREATE TABLE ")
                 .append(tableName)
                 .append("(");
-
+        
         for (String header : headers) {
             createTableQuery.append(header).append(" VARCHAR(255),");
         }
-
+        
         // Remove the last comma
         createTableQuery.setLength(createTableQuery.length() - 1);
         createTableQuery.append(")");
-
-        try (PreparedStatement statement = connection.prepareStatement(createTableQuery.toString()))
-        {
+        
+        try (PreparedStatement statement = connection.prepareStatement(createTableQuery.toString())) {
             statement.executeUpdate();
         }
     }
-
+    
     /**
      * Inserts a row of data into the specified table in the database.
      * The column names are derived from the provided headers array,
@@ -141,23 +136,23 @@ public class XLSToH2Database {
         StringBuilder insertQuery = new StringBuilder("INSERT INTO ")
                 .append(tableName)
                 .append(" (");
-
+        
         for (String header : headers) {
             insertQuery.append(header).append(",");
         }
-
+        
         // Remove the last comma
         insertQuery.setLength(insertQuery.length() - 1);
         insertQuery.append(") VALUES (");
-
+        
         for (String value : values) {
             insertQuery.append("'").append(value).append("',");
         }
-
+        
         // Remove the last comma
         insertQuery.setLength(insertQuery.length() - 1);
         insertQuery.append(")");
-
+        
         try (PreparedStatement statement = connection.prepareStatement(insertQuery.toString())) {
             statement.executeUpdate();
         }
