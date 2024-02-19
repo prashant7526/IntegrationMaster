@@ -26,4 +26,8 @@ public class CommonUtil {
         }
         return conn;
     }
+    
+    public boolean containsWhitespace(String text) {
+        return text.contains(" ");
+    }
 }

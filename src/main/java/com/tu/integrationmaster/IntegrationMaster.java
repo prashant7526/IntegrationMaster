@@ -20,7 +20,6 @@ public class IntegrationMaster {
      * performs folder checks, logs welcome and start messages, and checks data folders
      * 
      * @param  args  the command-line arguments
-     * @return       void
      */
     public static void main(String[] args) {
         APPConfigPOJO appConfigPOJO = new APPConfigPOJO();
