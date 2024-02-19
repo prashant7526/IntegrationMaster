@@ -15,6 +15,7 @@
         <h2.version>2.2.220</h2.version>
         <poi.version>5.2.5</poi.version>
         <log4j.version>3.0.0-beta1</log4j.version>
+        <poixml.version>5.2.5</poixml.version>
     </properties>
     <dependencies>
         <!-- H2 Database -->
@@ -36,7 +37,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>5.2.5</version>
+            <version>${poi.version}</version>
             <type>jar</type>
         </dependency>
     </dependencies>
