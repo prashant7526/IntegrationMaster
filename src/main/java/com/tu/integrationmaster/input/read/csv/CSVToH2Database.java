@@ -24,8 +24,6 @@ public class CSVToH2Database {
      * It reads the CSV file, creates a table in the database with the same structure as the CSV file, and inserts the data into the table.
      * If an error occurs during this process, it logs the error message.
      * 
-     * @param None
-     * @return None
      */
     public void loadCSVFile() {
     

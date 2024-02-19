@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Iterator;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.tu.integrationmaster.common.CommonUtil;
 import com.tu.integrationmaster.pojo.app.settings.config.IntegrationConfigPOJO;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class XLSToH2Database {
     public static XLSToH2Database INSTANCE = new XLSToH2Database();
@@ -26,7 +27,6 @@ public class XLSToH2Database {
      * The XLSX file is assumed to have one sheet, specified by the sheetIndex parameter (0-based).
      * The XLSX file path and other configuration details are fetched from the IntegrationConfigPOJO class.
      *
-     * @throws SQLException  If a database access error occurs.
      */
     public void loadXLSXFile() {
         String excelFilePath = IntegrationConfigPOJO.INSTANCE.getINPUT_FOLDER().concat("\\")
@@ -36,8 +36,8 @@ public class XLSToH2Database {
         int sheetIndex = 0; // Specify the sheet index here (0-based)
         
         try (Connection connection = CommonUtil.commonUtil.getDBConnection();
-             FileInputStream fileInputStream = new FileInputStream(excelFilePath);
-             Workbook workbook = new HSSFWorkbook(fileInputStream);) {
+         FileInputStream fileInputStream = new FileInputStream(excelFilePath);
+         Workbook workbook = new XSSFWorkbook(fileInputStream);) {
             Sheet sheet = workbook.getSheetAt(sheetIndex);
             Row headerRow = sheet.getRow(0);
             int columnCount = headerRow.getLastCellNum();
@@ -47,7 +47,8 @@ public class XLSToH2Database {
             int columnIndex = 0;
             while (cellIterator.hasNext()) {
                 Cell cell = cellIterator.next();
-                headers[columnIndex++] = cell.getStringCellValue();
+                    headers[columnIndex++] = "`"+cell.getStringCellValue()+"`";
+                
             }
             
             createTable(connection, tableName, headers);
