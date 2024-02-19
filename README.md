@@ -1,5 +1,5 @@
 # Integration Master
-Integration Master is an easy, poewerfull, and open-source project getting build entirely in Java. It's aim is to serve as a powerful data integration tool, facilitating seamless integration between two systems through data manipulation using Extract, Transform, Load (ETL) techniques. It supports various data sources such as CSV, Excel, XML, REST API, and databases, and can generate output in any of these formats as well.
+Integration Master is an easy, powerfull, and open-source project getting build entirely in Java. It's aim is to serve as a powerful data integration tool, facilitating seamless integration between two systems through data manipulation using Extract, Transform, Load (ETL) techniques. It supports various data sources such as CSV, Excel, XML, REST API, and databases, and can generate output in any of these formats as well.
 
 ## Features
  - Flexible Data Integration: Integration Master provides a flexible and extensible framework for integrating data from diverse sources. It allows you to extract data from multiple formats and systems, transform it according to your specific requirements, and load it into the desired destination.
