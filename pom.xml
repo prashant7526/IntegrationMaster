@@ -12,7 +12,7 @@
         <exec.mainClass>com.tu.integrationmaster.IntegrationMaster</exec.mainClass>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <h2.version>2.2.220</h2.version>
+        <h2.version>2.2.224</h2.version>
         <poi.version>5.2.5</poi.version>
         <log4j.version>3.0.0-beta1</log4j.version>
         <poixml.version>5.2.5</poixml.version>
