@@ -15,133 +15,140 @@ import com.tu.integrationmaster.prerequisites.log.LogFileManager;
 
 public class CSVToH2Database {
 
-    public static final CSVToH2Database INSTANCE = new CSVToH2Database();
+  public static final CSVToH2Database INSTANCE = new CSVToH2Database();
 
-    /**
-     * Loads a CSV file into a database table.
-     *
-     * This Java code snippet defines a method loadCSVFile() that loads a CSV file into a database table.
-     * It reads the CSV file, creates a table in the database with the same structure as the CSV file, and inserts the data into the table.
-     * If an error occurs during this process, it logs the error message.
-     * 
-     */
-    public void loadCSVFile() {
-    
-        String csvFilePath = IntegrationConfigPOJO.INSTANCE.getINPUT_FOLDER().concat("\\")
-                .concat(IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME());
-        String tableName = IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME().replace(".csv", "");
-    
-        try (Connection connection = CommonUtil.commonUtil.getDBConnection();
-             BufferedReader br = new BufferedReader(new FileReader(csvFilePath));)
-        {
-            String line;
-            String[] headers = null;
-            boolean isFirstLine = true;
-            int totalLines = 0;
-            int currentLine = 0;
-    
-            // Calculate the total number of lines in the file
-            try (LineNumberReader lnr = new LineNumberReader(new FileReader(csvFilePath))) {
-                while (lnr.skip(Long.MAX_VALUE) > 0) {
-                    // Do nothing
-                }
-                totalLines = lnr.getLineNumber() + 1;
-            }
-    
-            // Create the progress bar
-            StringBuilder progressBar = new StringBuilder("[");
-            int progressBarWidth = 50;
-    
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                if (isFirstLine) {
-                    headers = values;
-                    createTable(connection, tableName, headers);
-                    isFirstLine = false;
-                } else {
-                    insertRow(connection, tableName, headers, values);
-                }
-    
-                currentLine++;
-    
-                // Update the progress bar
-                int progress = (int) ((double) currentLine / totalLines * progressBarWidth);
-                progressBar.setLength(1);
-                progressBar.append("=".repeat(progress));
-                progressBar.append(" ".repeat(progressBarWidth - progress));
-                progressBar.append("] ");
-    
-                // Print the progress bar
-                System.out.print("\r" + progressBar + (int) ((double) currentLine / totalLines * 100) + "%");
-    
-                // Sleep for a short duration to slow down the progress
-                Thread.sleep(100);
-            }
-            System.out.println();
-            System.out.println("CSV data imported into H2 database table: " + tableName);
-        } catch (Exception e) {
-            LogFileManager.INSTANCE.systemLogManager(e.getMessage());
-        }
-    }
+  /**
+   * Loads a CSV file into a database table.
+   *
+   * This Java code snippet defines a method loadCSVFile() that loads a CSV file
+   * into a database table.
+   * It reads the CSV file, creates a table in the database with the same
+   * structure as the CSV file, and inserts the data into the table.
+   * If an error occurs during this process, it logs the error message.
+   * 
+   */
+  public void loadCSVFile() {
 
-    /**
-     * A method to create a table in the database using the provided connection,
-     * table name, and headers.
-     *
-     * This code defines a method to create a table in a database using the provided connection, table name, and headers.
-     * It uses the provided connection to execute a SQL query that creates a table with the specified name and columns.
-     * If an exception occurs during the table creation process, it is caught and logged using a system log manager.
-     * 
-     * @param connection the connection to the database
-     * @param tableName  the name of the table to be created
-     * @param headers    an array of column headers for the table
-     * @throws SQLException if a database access error occurs
-     */
-    private void createTable(Connection connection, String tableName, String[] headers) throws SQLException {
-        try {
-            String createTableQuery = "CREATE TABLE " + tableName + "(" +
-                    Arrays.stream(headers)
-                            .map(header -> header.replace(" ", "").trim() + " VARCHAR(255)")
-                            .collect(Collectors.joining(","))
-                    + ")";
-            try (PreparedStatement statement = connection.prepareStatement(createTableQuery)) {
-                statement.executeUpdate();
-            }
-        } catch (Exception e) {
-            LogFileManager.INSTANCE.systemLogManager(e.getMessage());
-        }
-    }
+    String csvFilePath = IntegrationConfigPOJO.INSTANCE.getINPUT_FOLDER().concat("\\")
+        .concat(IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME());
+    String tableName = IntegrationConfigPOJO.INSTANCE.getCSV_FILE_NAME().replace(".csv", "");
 
-    /**
-     * Insert a new row into the specified table with the given headers and values.
-     *
-     * This code snippet defines a method to insert a new row into a specified database table.
-     * It takes the database connection, table name, headers, and values as parameters, constructs an SQL INSERT query, and executes it using a prepared statement.
-     * If an exception occurs during the insertion, it is caught and logged.
-     * 
-     * @param connection the connection to the database
-     * @param tableName  the name of the table to insert into
-     * @param headers    the headers of the table
-     * @param values     the values to insert into the table
-     * @return nothing
-     */
-    private void insertRow(Connection connection, String tableName, String[] headers, String[] values)
-            throws SQLException {
-        try {
-            StringBuilder insertQuery = new StringBuilder("INSERT INTO ")
-                    .append(tableName)
-                    .append(" (");
-            String headerList = String.join(",", headers)
-                    .replaceAll(" ", "")
-                    .trim();
-            insertQuery.append(headerList).append(") VALUES ('")
-                    .append(String.join("','", values))
-                    .append("')");
-            try (PreparedStatement statement = connection.prepareStatement(insertQuery.toString())) {
-                statement.executeUpdate();
-            }
-        } catch (Exception e) {
-            LogFileManager.INSTANCE.systemLogManager(e.getMessage());
+    try (Connection connection = CommonUtil.commonUtil.getDBConnection();
+        BufferedReader br = new BufferedReader(new FileReader(csvFilePath));) {
+      String line;
+      String[] headers = null;
+      boolean isFirstLine = true;
+      int totalLines = 0;
+      int currentLine = 0;
+
+      // Calculate the total number of lines in the file
+      try (LineNumberReader lnr = new LineNumberReader(new FileReader(csvFilePath))) {
+        while (lnr.skip(Long.MAX_VALUE) > 0) {
+          // Do nothing
         }
+        totalLines = lnr.getLineNumber() + 1;
+      }
+
+      // Create the progress bar
+      StringBuilder progressBar = new StringBuilder("[");
+      int progressBarWidth = 50;
+
+      while ((line = br.readLine()) != null) {
+        String[] values = line.split(",");
+        if (isFirstLine) {
+          headers = values;
+          createTable(connection, tableName, headers);
+          isFirstLine = false;
+        } else {
+          insertRow(connection, tableName, headers, values);
+        }
+
+        currentLine++;
+
+        // Update the progress bar
+        int progress = (int) ((double) currentLine / totalLines * progressBarWidth);
+        progressBar.setLength(1);
+        progressBar.append("=".repeat(progress));
+        progressBar.append(" ".repeat(progressBarWidth - progress));
+        progressBar.append("] ");
+
+        // Print the progress bar
+        System.out.print("\r" + progressBar + (int) ((double) currentLine / totalLines * 100) + "%");
+
+        // Sleep for a short duration to slow down the progress
+        Thread.sleep(100);
+      }
+      System.out.println();
+      System.out.println("CSV data imported into H2 database table: " + tableName);
+    } catch (Exception e) {
+      LogFileManager.INSTANCE.systemLogManager(e.getMessage());
     }
+  }
+
+  /**
+   * A method to create a table in the database using the provided connection,
+   * table name, and headers.
+   *
+   * This code defines a method to create a table in a database using the provided
+   * connection, table name, and headers.
+   * It uses the provided connection to execute a SQL query that creates a table
+   * with the specified name and columns.
+   * If an exception occurs during the table creation process, it is caught and
+   * logged using a system log manager.
+   * 
+   * @param connection the connection to the database
+   * @param tableName  the name of the table to be created
+   * @param headers    an array of column headers for the table
+   * @throws SQLException if a database access error occurs
+   */
+  private void createTable(Connection connection, String tableName, String[] headers) throws SQLException {
+    try {
+      String createTableQuery = "CREATE TABLE " + tableName + "(" +
+          Arrays.stream(headers)
+              .map(header -> header.replace(" ", "").trim() + " VARCHAR(255)")
+              .collect(Collectors.joining(","))
+          + ")";
+      try (PreparedStatement statement = connection.prepareStatement(createTableQuery)) {
+        statement.executeUpdate();
+      }
+    } catch (Exception e) {
+      LogFileManager.INSTANCE.systemLogManager(e.getMessage());
+    }
+  }
+
+  /**
+   * Insert a new row into the specified table with the given headers and values.
+   *
+   * This code snippet defines a method to insert a new row into a specified
+   * database table.
+   * It takes the database connection, table name, headers, and values as
+   * parameters, constructs an SQL INSERT query, and executes it using a prepared
+   * statement.
+   * If an exception occurs during the insertion, it is caught and logged.
+   * 
+   * @param connection the connection to the database
+   * @param tableName  the name of the table to insert into
+   * @param headers    the headers of the table
+   * @param values     the values to insert into the table
+   * @return nothing
+   */
+  private void insertRow(Connection connection, String tableName, String[] headers, String[] values)
+      throws SQLException {
+    try {
+      StringBuilder insertQuery = new StringBuilder("INSERT INTO ")
+          .append(tableName)
+          .append(" (");
+      String headerList = String.join(",", headers)
+          .replaceAll(" ", "")
+          .trim();
+      insertQuery.append(headerList).append(") VALUES ('")
+          .append(String.join("','", values))
+          .append("')");
+      try (PreparedStatement statement = connection.prepareStatement(insertQuery.toString())) {
+        statement.executeUpdate();
+      }
+    } catch (Exception e) {
+      LogFileManager.INSTANCE.systemLogManager(e.getMessage());
+    }
+  }
 }
